@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>  <meta name="theme-color" content="#F2F2F7"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+  <title>HealthTrack</title>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+  <link rel="stylesheet" href="/static/css/habits.css"/>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ── Header ──────────────────────────────────────────────────── -->
+  <header class="app-header">
+    <div>
+      <div class="header-name">Welcome</div>
+      <div class="header-date" id="headerDate">—</div>
+    </div>
+    <div class="status-dot" id="statusDot" title="API status"></div>
+  </header>
+
+  <!-- ── Habits Card ─────────────────────────────────────────────── -->
+  <div class="card habits-card" id="habitsCard">
+    <div class="habits-header">
+      <span class="habits-title">Habits</span>
+      <button class="habits-add-btn" id="habitsAddBtn" aria-label="Add habit">
+        <svg viewBox="0 0 24 24">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="habits-scroll" id="habitsScroll"></div>
+    <p class="habits-empty" id="habitsEmpty">No habits yet — tap + to add one</p>
+  </div>
+
+  <!-- ── Placeholder cards (future widgets) ──────────────────────── -->
+  <div class="card card-placeholder">
+    <div class="placeholder-inner">Coming soon</div>
+  </div>
+
+  <div class="card-row">
+    <div class="card">
+      <div class="placeholder-inner">—</div>
+    </div>
+    <div class="card">
+      <div class="placeholder-inner">—</div>
+    </div>
+  </div>
+
+  <div class="card card-placeholder section-gap" style="min-height:180px;">
+    <div class="placeholder-inner">Coming soon</div>
+  </div>
+
+</div><!-- /#app -->
+
+<!-- ── Bottom Nav ───────────────────────────────────────────────── -->
+<nav class="bottom-nav">
+  <a class="nav-item active" href="/">
+    <svg viewBox="0 0 24 24">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+    <span class="nav-label">Home</span>
+  </a>
+
+  <a class="nav-item" href="#">
+    <svg viewBox="0 0 24 24">
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+    </svg>
+    <span class="nav-label">Trends</span>
+  </a>
+
+  <a class="nav-item" href="#">
+    <svg viewBox="0 0 24 24">
+      <line x1="8" y1="6" x2="21" y2="6"/>
+      <line x1="8" y1="12" x2="21" y2="12"/>
+      <line x1="8" y1="18" x2="21" y2="18"/>
+      <line x1="3" y1="6" x2="3.01" y2="6"/>
+      <line x1="3" y1="12" x2="3.01" y2="12"/>
+      <line x1="3" y1="18" x2="3.01" y2="18"/>
+    </svg>
+    <span class="nav-label">Log</span>
+  </a>
+
+  <a class="nav-item" href="#">
+    <svg viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="4"/>
+      <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+    </svg>
+    <span class="nav-label">Profile</span>
+  </a>
+</nav>
+
+<!-- ── Habit Modal ──────────────────────────────────────────────── -->
+<div class="modal-overlay" id="habitModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalTitle">New Habit</div>
+
+    <div class="habit-field">
+      <label for="habitName">Name</label>
+      <input id="habitName" type="text" placeholder="e.g. Drink water" maxlength="24" autocomplete="off"/>
+    </div>
+
+    <div class="habit-field-grid">
+      <div class="habit-field">
+        <label for="habitGoal">Daily Goal</label>
+        <input id="habitGoal" type="number" min="0.1" step="0.1" value="1" inputmode="decimal"/>
+      </div>
+
+      <div class="habit-field">
+        <label for="habitUnit">Unit</label>
+        <input id="habitUnit" type="text" placeholder="count, ml, g, km" maxlength="12" autocomplete="off"/>
+      </div>
+    </div>
+
+    <div class="habit-field">
+      <label for="habitIncrement">Add Amount Per Tap</label>
+      <input id="habitIncrement" type="number" min="0.1" step="0.1" value="1" inputmode="decimal"/>
+    </div>
+
+    <div class="habit-field">
+      <label>Icon</label>
+      <div class="icon-grid" id="iconGrid"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-primary" id="habitSaveBtn">Save</button>
+      <button class="btn-danger" id="habitDeleteBtn" style="display:none">Delete Habit</button>
+      <button class="btn-secondary" id="habitCancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Habit Trends Modal ──────────────────────────────────────── -->
+<div class="modal-overlay" id="habitTrendsModal">
+  <div class="modal-sheet trends-sheet">
+    <div class="modal-handle"></div>
+
+    <div class="trends-header">
+      <div>
+        <div class="modal-title trends-title">Habit Trends</div>
+        <div class="trends-subtitle">Current streaks and the last 7 days</div>
+      </div>
+
+      <button class="trends-close-btn" id="habitTrendsCloseBtn" aria-label="Close trends">
+        <svg viewBox="0 0 24 24">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="trends-list" id="habitTrendsList"></div>
+
+    <p class="trends-empty" id="habitTrendsEmpty">
+      No habit data yet. Complete a habit to start building a streak.
+    </p>
+  </div>
+</div>
+
+<!-- ── Toast ──────────────────────────────────────────────────── -->
+<div class="toast" id="toast"></div>
+
+<script src="/static/js/main.js"></script>
+<script src="/static/js/habits.js"></script>
+</body>
+</html>
