@@ -1,382 +1,167 @@
-/* ── Habits Widget ───────────────────────────────────────────────────────── */
+/* ── Habits card ──────────────────────────────────────────────────────── */
 
 .habits-card {
-  padding: 18px 0 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-/* Header row */
 .habits-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 18px 14px;
+  gap: 16px;
 }
 
 .habits-title {
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 17px;
+  font-weight: 850;
   color: var(--text);
-  letter-spacing: -0.1px;
+  letter-spacing: -0.2px;
 }
 
 .habits-add-btn {
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  background: var(--green);
   border: none;
-  cursor: pointer;
+  background: var(--green-bg);
+  color: var(--green);
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
   flex-shrink: 0;
-  -webkit-tap-highlight-color: transparent;
-  transition: transform 0.15s, opacity 0.15s;
-  box-shadow: 0 2px 8px rgba(125,184,120,0.4);
 }
-.habits-add-btn:active { transform: scale(0.88); opacity: 0.85; }
+
 .habits-add-btn svg {
-  width: 14px; height: 14px;
-  stroke: #fff; fill: none;
-  stroke-width: 2.5;
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 2.4;
   stroke-linecap: round;
 }
 
-/* Scroll track */
 .habits-scroll {
   display: flex;
-  gap: 16px;
-  padding: 4px 18px 2px;
+  gap: 14px;
   overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 2px 4px;
   scroll-snap-type: x proximity;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  -webkit-overflow-scrolling: touch;
 }
-.habits-scroll::-webkit-scrollbar { display: none; }
 
-/* Empty state */
-.habits-empty {
-  padding: 10px 18px 4px;
-  font-size: 13px;
-  color: var(--text-faint);
-  font-style: italic;
+.habits-scroll::-webkit-scrollbar {
   display: none;
 }
-.habits-empty.visible { display: block; }
-
-/* ── Single habit ring ───────────────────────────────────────────────────── */
 
 .habit-item {
+  width: 82px;
+  flex: 0 0 82px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 7px;
-  flex-shrink: 0;
-  scroll-snap-align: start;
+  gap: 8px;
   cursor: pointer;
+  scroll-snap-align: start;
   -webkit-tap-highlight-color: transparent;
-  user-select: none;
-  -webkit-user-select: none;
 }
 
 .habit-ring-wrap {
   position: relative;
-  width: 62px;
-  height: 62px;
-  transition: transform 0.15s;
+  width: 64px;
+  height: 64px;
 }
-.habit-item:active .habit-ring-wrap { transform: scale(0.92); }
 
-/* SVG ring */
 .habit-ring-svg {
-  width: 62px;
-  height: 62px;
+  width: 64px;
+  height: 64px;
   transform: rotate(-90deg);
-  overflow: visible;
+}
+
+.ring-bg,
+.ring-progress {
+  fill: none;
+  stroke-width: 5;
 }
 
 .ring-bg {
-  fill: none;
-  stroke: #EBEBEF;
-  stroke-width: 3.5;
+  stroke: var(--bg);
 }
 
 .ring-progress {
-  fill: none;
   stroke: var(--green);
-  stroke-width: 3.5;
   stroke-linecap: round;
-  /* circumference of r=26: 2π×26 ≈ 163.4 */
   stroke-dasharray: 163.4;
   stroke-dashoffset: 163.4;
-  transition: stroke-dashoffset 0.55s cubic-bezier(.22,1,.36,1);
+  transition: stroke-dashoffset 0.25s ease;
 }
 
-/* Completed state */
-.habit-item.done .ring-progress {
-  stroke-dashoffset: 0;
-}
-
-/* Checkmark overlay when done */
+.ring-icon,
 .ring-check {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s;
-  pointer-events: none;
+  color: var(--green);
 }
-.habit-item.done .ring-check { opacity: 1; }
+
+.ring-icon svg,
 .ring-check svg {
-  width: 16px; height: 16px;
-  stroke: var(--green);
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
   fill: none;
-  stroke-width: 2.5;
+  stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-/* Icon inside ring */
-.ring-icon {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.3s;
+.ring-check {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
-.habit-item.done .ring-icon { opacity: 0.35; }
 
-.ring-icon svg {
-  width: 22px;
-  height: 22px;
-  fill: none;
-  stroke: var(--text-sub);
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  transition: stroke 0.3s;
+.habit-item.done .ring-icon {
+  opacity: 0;
 }
-.habit-item.done .ring-icon svg { stroke: var(--green); }
 
-/* Label */
+.habit-item.done .ring-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
 .habit-label {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text-sub);
-  max-width: 62px;
+  max-width: 82px;
+  font-size: 12px;
+  line-height: 1.1;
+  font-weight: 800;
+  color: var(--text);
   text-align: center;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
-  letter-spacing: 0.01em;
-  transition: color 0.3s;
 }
-.habit-item.done .habit-label { color: var(--green); }
-
-/* Bounce animation on complete */
-@keyframes habitDone {
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.14); }
-  70%  { transform: scale(0.95); }
-  100% { transform: scale(1); }
-}
-.habit-item.bounce .habit-ring-wrap {
-  animation: habitDone 0.4s cubic-bezier(.22,1,.36,1);
-}
-
-/* ── Modal overlay ───────────────────────────────────────────────────────── */
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.35);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  z-index: 200;
-  display: flex;
-  align-items: flex-end;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s;
-}
-.modal-overlay.open {
-  opacity: 1;
-  pointer-events: all;
-}
-
-.modal-sheet {
-  width: 100%;
-  max-width: 430px;
-  margin: 0 auto;
-  background: var(--card);
-  border-radius: 24px 24px 0 0;
-  padding: 12px 20px calc(32px + env(safe-area-inset-bottom));
-  transform: translateY(100%);
-  transition: transform 0.3s cubic-bezier(.32,1,.36,1);
-  max-height: 85dvh;
-  overflow-y: auto;
-}
-.modal-overlay.open .modal-sheet { transform: translateY(0); }
-
-/* Drag handle */
-.modal-handle {
-  width: 36px;
-  height: 4px;
-  background: var(--text-faint);
-  border-radius: var(--radius-pill);
-  margin: 0 auto 20px;
-}
-
-.modal-title {
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 20px;
-  letter-spacing: -0.3px;
-}
-
-/* Form fields */
-.habit-field {
-  margin-bottom: 14px;
-}
-.habit-field label {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-sub);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: 6px;
-}
-.habit-field input {
-  width: 100%;
-  padding: 12px 14px;
-  background: var(--bg);
-  border: 1.5px solid transparent;
-  border-radius: var(--radius-sm);
-  font-family: var(--font);
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text);
-  outline: none;
-  transition: border-color 0.15s;
-  -webkit-appearance: none;
-}
-.habit-field input:focus {
-  border-color: var(--green);
-}
-
-/* Icon picker */
-.icon-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 8px;
-  margin-top: 4px;
-}
-.icon-option {
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  background: var(--bg);
-  border: 2px solid transparent;
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
-  -webkit-tap-highlight-color: transparent;
-}
-.icon-option svg {
-  width: 20px; height: 20px;
-  stroke: var(--text-sub);
-  fill: none;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.icon-option.selected {
-  background: var(--green-bg);
-  border-color: var(--green);
-}
-.icon-option.selected svg { stroke: var(--green); }
-
-/* Action buttons */
-.modal-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 22px;
-}
-
-.btn-primary {
-  width: 100%;
-  padding: 14px;
-  background: var(--green);
-  color: #fff;
-  font-family: var(--font);
-  font-size: 15px;
-  font-weight: 600;
-  border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: opacity 0.15s, transform 0.15s;
-  letter-spacing: -0.1px;
-}
-.btn-primary:active { opacity: 0.85; transform: scale(0.98); }
-
-.btn-secondary {
-  width: 100%;
-  padding: 14px;
-  background: var(--bg);
-  color: var(--text-sub);
-  font-family: var(--font);
-  font-size: 15px;
-  font-weight: 500;
-  border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: opacity 0.15s;
-}
-.btn-secondary:active { opacity: 0.7; }
-
-.btn-danger {
-  width: 100%;
-  padding: 14px;
-  background: #FFF0F0;
-  color: #D93025;
-  font-family: var(--font);
-  font-size: 15px;
-  font-weight: 500;
-  border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: opacity 0.15s;
-}
-.btn-danger:active { opacity: 0.7; }
-
-/* ── Habit amount + units ───────────────────────────────────────────────── */
 
 .habit-count {
   margin-top: -4px;
+  max-width: 82px;
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-faint);
   line-height: 1;
-  max-width: 82px;
   text-align: center;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .habit-step {
   margin-top: -5px;
   font-size: 9px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-faint);
   line-height: 1;
 }
@@ -386,29 +171,103 @@
   color: var(--green);
 }
 
+.habit-item.bounce {
+  animation: habit-bounce 0.42s ease;
+}
+
+@keyframes habit-bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+.habits-empty {
+  display: none;
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-faint);
+}
+
+.habits-empty.visible {
+  display: block;
+}
+
+/* ── Habit modal fields ───────────────────────────────────────────────── */
+
+.habit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 13px;
+}
+
+.habit-field label {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.habit-field input,
+.habit-field select {
+  width: 100%;
+  height: 44px;
+  border: none;
+  border-radius: 14px;
+  background: var(--bg);
+  color: var(--text);
+  padding: 0 12px;
+  font-size: 14px;
+  font-weight: 700;
+  outline: none;
+}
+
 .habit-field-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 
-.habit-field input[type="number"] {
-  appearance: textfield;
-  -moz-appearance: textfield;
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
 }
 
-.habit-field input[type="number"]::-webkit-outer-spin-button,
-.habit-field input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+.icon-option {
+  width: 100%;
+  aspect-ratio: 1;
+  border: none;
+  border-radius: 16px;
+  background: var(--bg);
+  color: var(--text-sub);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
-/* ── Habit trends modal ─────────────────────────────────────────────────── */
+.icon-option.selected {
+  background: var(--green-bg);
+  color: var(--green);
+}
+
+.icon-option svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── Habit trends ─────────────────────────────────────────────────────── */
 
 .trends-sheet {
+  max-height: 82dvh;
   padding-bottom: calc(28px + env(safe-area-inset-bottom));
-  max-height: 82vh;
-  overflow-y: auto;
 }
 
 .trends-header {
@@ -425,7 +284,7 @@
 
 .trends-subtitle {
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-faint);
 }
 
@@ -440,7 +299,6 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
   flex-shrink: 0;
 }
 
@@ -496,6 +354,7 @@
   height: 38px;
   border-radius: 50%;
   background: var(--green-bg);
+  color: var(--green);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -505,7 +364,7 @@
 .trend-icon svg {
   width: 19px;
   height: 19px;
-  stroke: var(--green);
+  stroke: currentColor;
   fill: none;
   stroke-width: 1.9;
   stroke-linecap: round;
@@ -513,19 +372,19 @@
 }
 
 .trend-name {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text);
   max-width: 160px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
 }
 
 .trend-goal {
   margin-top: 2px;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-faint);
 }
 
@@ -537,15 +396,14 @@
 .trend-streak-value {
   font-size: 24px;
   line-height: 1;
-  font-weight: 800;
+  font-weight: 850;
   color: var(--green);
-  letter-spacing: -0.8px;
 }
 
 .trend-streak-label {
   margin-top: 2px;
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-faint);
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -568,7 +426,7 @@
   display: block;
   margin-bottom: 3px;
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-faint);
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -577,7 +435,7 @@
 .trend-stats strong {
   display: block;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--text);
   white-space: nowrap;
   overflow: hidden;
@@ -612,6 +470,6 @@
 
 .trend-day-label {
   font-size: 9px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-faint);
 }

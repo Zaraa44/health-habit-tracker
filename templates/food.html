@@ -1,0 +1,175 @@
+<div class="card calories-card" id="caloriesCard">
+  <div class="calories-header">
+    <div>
+      <span class="calories-title">Calories</span>
+      <div class="calories-subtitle" id="caloriesSubtitle">Today</div>
+    </div>
+    <button class="calories-add-btn" id="caloriesAddBtn" aria-label="Add food">
+      <svg viewBox="0 0 24 24">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="calories-main">
+    <div>
+      <div class="calories-value">
+        <span id="caloriesCurrent">0</span>
+        <span class="calories-unit">kcal</span>
+      </div>
+      <div class="calories-goal">
+        of <span id="caloriesGoal">2200</span> kcal
+      </div>
+    </div>
+    <button class="calories-goal-btn" id="caloriesGoalBtn">Goal</button>
+  </div>
+
+  <div class="calories-bar">
+    <div class="calories-bar-fill" id="caloriesBarFill"></div>
+  </div>
+
+  <div class="calories-macros">
+    <div>
+      <span>Protein</span>
+      <strong id="caloriesProtein">0g</strong>
+    </div>
+    <div>
+      <span>Carbs</span>
+      <strong id="caloriesCarbs">0g</strong>
+    </div>
+    <div>
+      <span>Fat</span>
+      <strong id="caloriesFat">0g</strong>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="foodModal">
+  <div class="modal-sheet food-sheet food-sheet-fullscreen">
+    <div class="food-fullscreen-top">
+      <div>
+        <div class="modal-title">Add Food</div>
+        <div class="food-subtitle">Choose a product from your list</div>
+      </div>
+      <button class="food-close-icon-btn" id="foodCloseIconBtn" aria-label="Close food modal">
+        <svg viewBox="0 0 24 24">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="food-modal-header">
+      <input class="food-search" id="foodSearch" type="text" placeholder="Search products" autocomplete="off"/>
+      <button class="food-create-btn" id="foodCreateBtn" aria-label="Create product">
+        <svg viewBox="0 0 24 24">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="food-list" id="foodList"></div>
+    <p class="food-empty" id="foodEmpty">No products yet. Tap + to create your first product.</p>
+  </div>
+</div>
+
+<div class="modal-overlay" id="productModal">
+  <div class="modal-sheet product-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">New Product</div>
+
+    <div class="habit-field">
+      <label for="productName">Name</label>
+      <input id="productName" type="text" placeholder="e.g. Protein bar" maxlength="40" autocomplete="off"/>
+    </div>
+
+    <div class="habit-field">
+      <label for="productCalories">Calories per 100g</label>
+      <input id="productCalories" type="number" min="0" step="0.1" value="0" inputmode="decimal"/>
+    </div>
+
+    <div class="habit-field-grid">
+      <div class="habit-field">
+        <label for="productProtein">Protein per 100g</label>
+        <input id="productProtein" type="number" min="0" step="0.1" value="0" inputmode="decimal"/>
+      </div>
+      <div class="habit-field">
+        <label for="productCarbs">Carbs per 100g</label>
+        <input id="productCarbs" type="number" min="0" step="0.1" value="0" inputmode="decimal"/>
+      </div>
+    </div>
+
+    <div class="habit-field">
+      <label for="productFat">Fat per 100g</label>
+      <input id="productFat" type="number" min="0" step="0.1" value="0" inputmode="decimal"/>
+    </div>
+
+    <div class="serving-editor">
+      <div class="serving-editor-title">Serving Sizes</div>
+      <div class="serving-editor-subtitle">Optional, for example 1 pack = 20g</div>
+      <div class="serving-input-row">
+        <input id="servingNameInput" type="text" placeholder="1 pack" maxlength="24" autocomplete="off"/>
+        <input id="servingGramsInput" type="number" min="0.1" step="0.1" placeholder="20g" inputmode="decimal"/>
+        <button type="button" id="servingAddBtn">Add</button>
+      </div>
+      <div class="serving-list" id="servingList"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-primary" id="productSaveBtn">Save Product</button>
+      <button class="btn-secondary" id="productCancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="mealModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="mealTitle">Add Food</div>
+
+    <div class="selected-food-card" id="selectedFoodCard"></div>
+
+    <div class="habit-field">
+      <label for="mealServing">Serving size</label>
+      <select id="mealServing" class="meal-serving-select">
+        <option value="custom">Custom grams</option>
+      </select>
+    </div>
+
+    <div class="habit-field" id="mealServingsField">
+      <label for="mealServings">Amount</label>
+      <input id="mealServings" type="number" min="0.1" step="0.1" value="1" inputmode="decimal"/>
+    </div>
+
+    <div class="habit-field" id="mealGramsField">
+      <label for="mealGrams">Amount in grams</label>
+      <input id="mealGrams" type="number" min="1" step="1" value="100" inputmode="decimal"/>
+    </div>
+
+    <div class="meal-preview" id="mealPreview"></div>
+
+    <div class="modal-actions">
+      <button class="btn-primary" id="mealSaveBtn">Add</button>
+      <button class="btn-secondary" id="mealCancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="calorieGoalModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Daily Calorie Goal</div>
+
+    <div class="habit-field">
+      <label for="dailyCalorieGoal">Max calories per day</label>
+      <input id="dailyCalorieGoal" type="number" min="1" step="1" value="2200" inputmode="numeric"/>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-primary" id="calorieGoalSaveBtn">Save Goal</button>
+      <button class="btn-secondary" id="calorieGoalCancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>

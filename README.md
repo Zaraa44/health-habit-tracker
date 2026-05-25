@@ -1,70 +1,41 @@
-# HealthTrack 🌿
+# HealthTrack
 
-A mobile-first health tracking web app built with **FastAPI** + vanilla HTML/CSS/JS.
+Mobile-first health tracker built with FastAPI, Jinja templates, vanilla JavaScript, and local JSON storage.
 
-## Project structure
+## Structure
 
+```text
+main.py                 FastAPI app setup
+habit.py                Habit API + JSON storage
+food.py                 Food/product/calorie API + JSON storage
+templates/index.html    Main page
+templates/habit.html    Habit widget and modals
+templates/food.html     Food widget and modals
+static/css/style.css    Shared app styles
+static/css/habits.css   Habit styles
+static/css/food.css     Food styles
+static/js/main.js       Shared frontend logic
+static/js/habit.js      Habit frontend logic
+static/js/food.js       Food frontend logic
+data/habits.json        Habit data
+data/food.json          Food data
 ```
-healthapp/
-├── main.py              ← FastAPI app + all API routes
-├── requirements.txt
-├── templates/
-│   └── index.html       ← Jinja2 HTML template
-└── static/
-    ├── css/style.css    ← All styles (mobile-first, dark theme)
-    └── js/main.js       ← Frontend JS (API calls, widget updates)
-```
 
-## Setup & run
+## Run
 
 ```bash
-# 1. Create a virtual environment (recommended)
-python -m venv .venv
-source .venv/bin/activate      # Windows: .venv\Scripts\activate
-
-# 2. Install dependencies
 pip install -r requirements.txt
-
-# 3. Start the server
-python main.py
-# or: uvicorn main:app --reload --port 8000
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-Open **http://localhost:8000** in your browser (or on your phone via your local IP).
+Open:
 
-## API docs
+```text
+http://127.0.0.1:8000/
+```
 
-FastAPI auto-generates interactive docs:
-- Swagger UI → http://localhost:8000/docs
-- ReDoc      → http://localhost:8000/redoc
+For phone testing, open your laptop IP address:
 
-## Available endpoints
-
-| Method | Path          | Description          |
-|--------|---------------|----------------------|
-| GET    | /api/health   | Health check         |
-| GET    | /api/summary  | Latest + totals      |
-| GET/POST | /api/weight | Weight entries       |
-| GET/POST | /api/sleep  | Sleep entries        |
-| GET/POST | /api/water  | Water intake         |
-| GET/POST | /api/mood   | Mood entries         |
-| GET/POST | /api/steps  | Step count           |
-
-## Widgets (current)
-- ⚖️  Weight
-- 😴  Sleep
-- 💧  Hydration
-- 😊  Mood
-- 👟  Steps
-
-## Widgets (placeholders — coming soon)
-- 🏋️  Workout
-- ❤️  Heart Rate
-- 🍎  Calories
-- 💊  Supplements
-
-## Next steps
-- Replace the in-memory `data_store` with **SQLite** (via `databases` or `SQLAlchemy`)
-- Add user authentication
-- Build out the Trends / Log / Settings pages
-- Connect a mobile PWA manifest + service worker for offline support
+```text
+http://YOUR-LAPTOP-IP:8000/
+```

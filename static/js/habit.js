@@ -1,4 +1,4 @@
-/* ── habits.js ─── habit widget logic ─────────────────────────────────── */
+/* ── habit.js ─── habit widget logic ─────────────────────────────────── */
 
 const ICONS = {
   water: `
@@ -72,7 +72,7 @@ const ICONS = {
     <svg viewBox="0 0 24 24">
       <path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.2 6.4 20.2 7.5 14 3 9.6l6.2-.9z"/>
     </svg>
-  `
+  `,
 };
 
 const HABIT_API = "/api/habits";
@@ -104,7 +104,7 @@ function showToast(message) {
 async function requestJson(url, options = {}) {
   const res = await fetch(url, {
     headers: { "Content-Type": "application/json" },
-    ...options
+    ...options,
   });
 
   if (!res.ok) {
@@ -117,8 +117,7 @@ async function requestJson(url, options = {}) {
 
 function toPositiveNumber(value, fallback = 1) {
   const n = Number.parseFloat(value);
-  if (!Number.isFinite(n) || n <= 0) return fallback;
-  return n;
+  return Number.isFinite(n) && n > 0 ? n : fallback;
 }
 
 function formatAmount(value) {
@@ -132,9 +131,7 @@ function formatAmount(value) {
 
 function formatStreakLabel(days) {
   const n = Number(days || 0);
-
-  if (n === 1) return "1 day";
-  return `${n} days`;
+  return n === 1 ? "1 day" : `${n} days`;
 }
 
 function normalizeUnit(value) {
@@ -201,7 +198,6 @@ function renderHabits() {
       const goal = Math.max(Number(habit.goal || 1), 0.1);
       const unit = normalizeUnit(habit.unit);
       const increment = Math.max(Number(habit.increment || 1), 0.1);
-
       const progress = Math.min(completed / goal, 1);
       const dashOffset = 163.4 * (1 - progress);
 
@@ -216,25 +212,16 @@ function renderHabits() {
             <circle class="ring-bg" cx="31" cy="31" r="26"></circle>
             <circle class="ring-progress" cx="31" cy="31" r="26" style="stroke-dashoffset:${dashOffset}"></circle>
           </svg>
-
-          <div class="ring-icon">
-            ${iconSvg(habit.icon)}
-          </div>
-
+          <div class="ring-icon">${iconSvg(habit.icon)}</div>
           <div class="ring-check">
             <svg viewBox="0 0 24 24">
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
           </div>
         </div>
-
         <div class="habit-label">${escapeHtml(habit.name)}</div>
-        <div class="habit-count">
-          ${formatAmount(completed)}/${formatAmount(goal)} ${escapeHtml(unit)}
-        </div>
-        <div class="habit-step">
-          +${formatAmount(increment)}
-        </div>
+        <div class="habit-count">${formatAmount(completed)}/${formatAmount(goal)} ${escapeHtml(unit)}</div>
+        <div class="habit-step">+${formatAmount(increment)}</div>
       `;
 
       item.addEventListener("pointerdown", () => {
@@ -260,7 +247,6 @@ function renderHabits() {
 
       item.addEventListener("click", async (event) => {
         event.stopPropagation();
-
         if (suppressClick) return;
         await trackHabit(habit);
       });
@@ -283,20 +269,15 @@ async function trackHabit(habit) {
   const completed = Number(habit.completed_today || 0);
   const goal = Math.max(Number(habit.goal || 1), 0.1);
   const increment = Math.max(Number(habit.increment || 1), 0.1);
-
-  const nextAmount = completed >= goal
-    ? 0
-    : Math.min(completed + increment, goal);
+  const nextAmount = completed >= goal ? 0 : Math.min(completed + increment, goal);
 
   try {
     if (nextAmount <= 0) {
-      await requestJson(`${HABIT_API}/${habit.id}/complete`, {
-        method: "DELETE"
-      });
+      await requestJson(`${HABIT_API}/${habit.id}/complete`, { method: "DELETE" });
     } else {
       await requestJson(`${HABIT_API}/${habit.id}/complete`, {
         method: "POST",
-        body: JSON.stringify({ amount: nextAmount })
+        body: JSON.stringify({ amount: nextAmount }),
       });
     }
 
@@ -331,7 +312,6 @@ function openHabitModal(habit = null) {
   goal.value = habit?.goal || 1;
   unit.value = habit?.unit || "count";
   increment.value = habit?.increment || 1;
-
   deleteBtn.style.display = habit ? "block" : "none";
 
   renderIconGrid();
@@ -341,10 +321,7 @@ function openHabitModal(habit = null) {
 }
 
 function closeHabitModal() {
-  const modal = $("habitModal");
-  if (!modal) return;
-
-  modal.classList.remove("open");
+  $("habitModal")?.classList.remove("open");
   editingHabitId = null;
   selectedIcon = "star";
 }
@@ -368,24 +345,18 @@ async function saveHabit() {
     return;
   }
 
-  const body = {
-    name,
-    icon: selectedIcon,
-    goal,
-    unit,
-    increment
-  };
+  const body = { name, icon: selectedIcon, goal, unit, increment };
 
   try {
     if (editingHabitId) {
       await requestJson(`${HABIT_API}/${editingHabitId}`, {
         method: "PUT",
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
       });
     } else {
       await requestJson(HABIT_API, {
         method: "POST",
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
       });
     }
 
@@ -400,10 +371,7 @@ async function deleteHabit() {
   if (!editingHabitId) return;
 
   try {
-    await requestJson(`${HABIT_API}/${editingHabitId}`, {
-      method: "DELETE"
-    });
-
+    await requestJson(`${HABIT_API}/${editingHabitId}`, { method: "DELETE" });
     closeHabitModal();
     await loadHabits();
   } catch {
@@ -413,7 +381,6 @@ async function deleteHabit() {
 
 async function openHabitTrendsModal() {
   const modal = $("habitTrendsModal");
-
   if (!modal) return;
 
   modal.classList.add("open");
@@ -452,17 +419,14 @@ function renderHabitTrends(items) {
     const currentStreak = Number(habit.current_streak || 0);
     const bestStreak = Number(habit.best_streak || 0);
     const unit = normalizeUnit(habit.unit);
-
     const daysHtml = (habit.last_7_days || [])
       .map((day) => {
         const amount = formatAmount(day.amount || 0);
-        const label = escapeHtml(day.label || "");
         const stateClass = day.done ? "done" : "";
-
         return `
           <div class="trend-day ${stateClass}" title="${amount} ${escapeHtml(unit)}">
             <span class="trend-dot"></span>
-            <span class="trend-day-label">${label}</span>
+            <span class="trend-day-label">${escapeHtml(day.label || "")}</span>
           </div>
         `;
       })
@@ -471,44 +435,23 @@ function renderHabitTrends(items) {
     row.innerHTML = `
       <div class="trend-top">
         <div class="trend-main">
-          <div class="trend-icon">
-            ${iconSvg(habit.icon)}
-          </div>
-
+          <div class="trend-icon">${iconSvg(habit.icon)}</div>
           <div>
             <div class="trend-name">${escapeHtml(habit.name)}</div>
-            <div class="trend-goal">
-              Goal: ${formatAmount(habit.goal)} ${escapeHtml(unit)}
-            </div>
+            <div class="trend-goal">Goal: ${formatAmount(habit.goal)} ${escapeHtml(unit)}</div>
           </div>
         </div>
-
         <div class="trend-streak">
           <div class="trend-streak-value">${currentStreak}</div>
           <div class="trend-streak-label">day streak</div>
         </div>
       </div>
-
       <div class="trend-stats">
-        <div>
-          <span>Current</span>
-          <strong>${formatStreakLabel(currentStreak)}</strong>
-        </div>
-
-        <div>
-          <span>Best</span>
-          <strong>${formatStreakLabel(bestStreak)}</strong>
-        </div>
-
-        <div>
-          <span>Today</span>
-          <strong>${formatAmount(habit.completed_today)} ${escapeHtml(unit)}</strong>
-        </div>
+        <div><span>Current</span><strong>${formatStreakLabel(currentStreak)}</strong></div>
+        <div><span>Best</span><strong>${formatStreakLabel(bestStreak)}</strong></div>
+        <div><span>Today</span><strong>${formatAmount(habit.completed_today)} ${escapeHtml(unit)}</strong></div>
       </div>
-
-      <div class="trend-week">
-        ${daysHtml}
-      </div>
+      <div class="trend-week">${daysHtml}</div>
     `;
 
     list.appendChild(row);
@@ -524,26 +467,20 @@ function bindHabitEvents() {
   $("habitsCard")?.addEventListener("click", (event) => {
     if (event.target.closest(".habit-item")) return;
     if (event.target.closest("#habitsAddBtn")) return;
-
     openHabitTrendsModal();
   });
 
   $("habitTrendsCloseBtn")?.addEventListener("click", closeHabitTrendsModal);
-
-  $("habitTrendsModal")?.addEventListener("click", (event) => {
-    if (event.target.id === "habitTrendsModal") {
-      closeHabitTrendsModal();
-    }
-  });
-
   $("habitSaveBtn")?.addEventListener("click", saveHabit);
   $("habitDeleteBtn")?.addEventListener("click", deleteHabit);
   $("habitCancelBtn")?.addEventListener("click", closeHabitModal);
 
   $("habitModal")?.addEventListener("click", (event) => {
-    if (event.target.id === "habitModal") {
-      closeHabitModal();
-    }
+    if (event.target.id === "habitModal") closeHabitModal();
+  });
+
+  $("habitTrendsModal")?.addEventListener("click", (event) => {
+    if (event.target.id === "habitTrendsModal") closeHabitTrendsModal();
   });
 
   document.addEventListener("keydown", (event) => {
